@@ -1,0 +1,29 @@
+.header {
+  height: 66px;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  z-index: 10;
+
+  .wrap {
+    position: relative;
+    height: 100%;
+    max-width: 1450px;
+    margin: 0 auto;
+    
+    .logo {
+      position: relative;
+      width: 250px;
+      top: 50%;
+      left: 40%;
+      transform: translateY(-50%);
+      -webkit-transform: translateY(-50%);
+      -moz-transform: translateY(-50%);
+
+      img {
+        width: 100%;
+        display: block;
+        margin: 0;
+        cursor: pointer;
+      }
+    }
+  }
+}
