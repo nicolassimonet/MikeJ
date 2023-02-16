@@ -15,10 +15,6 @@ const EmailPassword = () => {
   const [errors, setErrors] = useState([]); // Ajoutez cette ligne pour gérer les erreurs
   const navigate = useNavigate();
   
-
-  const handleChange = e => {
-    setEmail(e.target.value);
-  };
   
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,12 +60,13 @@ const EmailPassword = () => {
         )}
 
         <form onSubmit={handleSubmit}>
+        
           <FormInput
             type="email"
             name="email"
             value={email}
             placeholder="Email"
-            onChange={handleChange}
+            handleChange={e => setEmail(e.target.value)}
           />
 
           <Button type="submit">

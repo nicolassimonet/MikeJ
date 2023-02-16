@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./styles.scss";
 
 import { auth, handleUserProfile } from "./../../firebase/utils";
@@ -7,41 +8,30 @@ import AuthWrapper from "./../AuthWrapper";
 import FormInput from "../forms/FormInput";
 import Button from "./../forms/Button";
 
-const initialState = {
-  displayName: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-  errors: [],
-};
 
-class Signup extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...initialState,
-    };
+const Signup = props => {
+  const navigate = useNavigate();
+  const [displayName, setDisplayName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState([]);
 
-    this.handleChange = this.handleChange.bind(this);
+  const reset = () => {
+    setDisplayName('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setErrors([]);
   }
 
-  handleChange(e) {
-    const { name, value } = e.target;
 
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  handleFormSubmit = async (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
-    const { displayName, email, password, confirmPassword } = this.state;
 
     if (password !== confirmPassword) {
       const err = ["Les mot de passe ne correspondent pas."];
-      this.setState({
-        errors: err,
-      });
+      setErrors(err);
       return;
     }
 
@@ -52,18 +42,14 @@ class Signup extends Component {
       );
 
       await handleUserProfile(user, { displayName });
+      reset();
+      navigate('/')
 
-      this.setState({
-        ...initialState,
-      });
     } catch (err) {
-      console.log();
+      console.log(err);
     }
   };
 
-  render() {
-    const { displayName, email, password, confirmPassword, errors } =
-      this.state;
 
       const configAuthWrapper = {
         headline: 'Inscription'
@@ -81,14 +67,14 @@ class Signup extends Component {
           </ul>
         )}
 
-          <form onSubmit={this.handleFormSubmit}>
+          <form onSubmit={handleFormSubmit}>
             
             <FormInput
               type="text"
               name="displayName"
               value={displayName}
               placeholder="Nom complet"
-              onChange={this.handleChange}
+              handleChange={e => setDisplayName(e.target.value)}
             />
 
             <FormInput
@@ -96,7 +82,7 @@ class Signup extends Component {
               name="email"
               value={email}
               placeholder="Email"
-              onChange={this.handleChange}
+              handleChange={e => setEmail(e.target.value)}
             />
 
             <FormInput
@@ -104,7 +90,7 @@ class Signup extends Component {
               name="password"
               value={password}
               placeholder="Mot de passe"
-              onChange={this.handleChange}
+              handleChange={e => setPassword(e.target.value)}
             />
 
             <FormInput
@@ -112,7 +98,7 @@ class Signup extends Component {
               name="confirmPassword"
               value={confirmPassword}
               placeholder="Confirmer le mot de passe"
-              onChange={this.handleChange}
+              handleChange={e => setConfirmPassword(e.target.value)}
             />
 
             <Button type="submit">Inscription</Button>
@@ -121,6 +107,5 @@ class Signup extends Component {
       </AuthWrapper>
     );
   }
-}
 
 export default Signup;

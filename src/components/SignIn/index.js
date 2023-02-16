@@ -1,5 +1,6 @@
-import React, { Component } from "react";
-import { Link } from "react-router-dom";
+/* eslint-disable no-undef */
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./styles.scss";
 import Buttons from "../forms/Button";
@@ -9,44 +10,35 @@ import AuthWrapper from "../AuthWrapper";
 import FormInput from "./../forms/FormInput";
 import Button from "./../forms/Button";
 
-const initialState = {
-  email: "",
-  password: "",
-};
 
-class SignIn extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...initialState,
-    };
+const SignIn = props => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    this.handleChange = this.handleChange.bind(this);
+  const resetForm = () => {
+
+    setEmail('');
+    setPassword('');
   }
 
-  handleChange(e) {
-    const { name, value } = e.target;
-    this.setState({
-      [name]: value,
-    });
-  }
-
-  handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = this.state;
-
+  
     try {
-      await auth.signInWithEmailAndPassword(email, password);
-      this.setState({
-        ...initialState,
-      });
+      if (!email) {
+        await signInWithGoogle();
+      } else {
+        await auth.signInWithEmailAndPassword(email, password);
+        resetForm();
+      }
+      navigate('/');
     } catch (err) {
       console.log(err);
+      alert("Adresse e-mail ou mot de passe incorrect.");
     }
   };
-
-  render() {
-    const { email, password } = this.state;
+  
 
     const configAuthWrapper = {
       headline: 'Connexion'
@@ -55,14 +47,14 @@ class SignIn extends Component {
     return (
       <AuthWrapper {...configAuthWrapper}>
         <div className="formWrap">
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={handleSubmit}>
 
             <FormInput
               type="email"
               name="email"
               value={email}
               placeholder="Email"
-              handleChange={this.handleChange}
+              handleChange={e => setEmail(e.target.value)}
             />
 
             <FormInput
@@ -70,7 +62,7 @@ class SignIn extends Component {
               name="password"
               value={password}
               placeholder="Mot de passe"
-              handleChange={this.handleChange}
+              handleChange={e => setPassword(e.target.value)}
             />
 
             <Button type="submit">Connexion</Button>
@@ -94,6 +86,5 @@ class SignIn extends Component {
       </AuthWrapper>
     );
   }
-}
 
 export default SignIn;

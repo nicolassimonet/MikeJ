@@ -1,8 +1,11 @@
 import React from "react";
+import { connect } from "react-redux";
 import './style.scss';
-import Logo from './../../assets/logo.png'
+
 import { Link } from "react-router-dom";
 import { auth } from './../../firebase/utils'
+
+import Logo from './../../assets/logo.png'
 
 
 const Header = props => {
@@ -21,6 +24,11 @@ const Header = props => {
 
           {currentUser && (
             <ul>
+            <li>
+              <Link to="/profil">
+                Profil
+              </Link>
+            </li>
               <li>
                 <span className="logout__btn" onClick={() => auth.signOut()}>
                   Deconnexion
@@ -30,7 +38,7 @@ const Header = props => {
           )}
 
           {!currentUser && (
-            <ul>
+          <ul>
             <li>
               <Link to="/register">
                 Inscription
@@ -53,4 +61,12 @@ Header.defaultProps = {
   currentUser: null
 };
 
-export default Header;
+const mapStateToProps = ({ user }) => {
+  console.log(user);
+  return {
+
+    currentUser: user.currentUser
+  }
+}
+
+export default connect(mapStateToProps, null)(Header);
